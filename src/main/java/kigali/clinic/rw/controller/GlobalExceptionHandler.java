@@ -1,5 +1,6 @@
 package kigali.clinic.rw.controller;
 
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleBadRequest(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", ex.getMessage()));
+    }
+
+    // Quiz endpoints parse dates with LocalDate.parse(); a value such as "2026-13-40"
+    // would otherwise surface as a 500, so it is reported as a client error instead.
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<Map<String, String>> handleBadDate(DateTimeParseException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", "Dates must use the format yyyy-MM-dd"));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

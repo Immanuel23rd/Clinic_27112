@@ -31,6 +31,20 @@ public class DoctorController {
         return service.findAll();
     }
 
+    // The fixed paths below do not clash with "/{id}": Spring prefers the literal path.
+
+    // B1: GET /api/doctors/by-specialization?name=cardiology
+    @GetMapping("/by-specialization")
+    public List<Doctor> bySpecialization(@RequestParam String name) {
+        return service.findBySpecialization(name);
+    }
+
+    // B2: GET /api/doctors/without-office
+    @GetMapping("/without-office")
+    public List<Doctor> withoutOffice() {
+        return service.findWithoutOffice();
+    }
+
     @GetMapping("/{id}")
     public Doctor findById(@PathVariable UUID id) {
         return service.findById(id);

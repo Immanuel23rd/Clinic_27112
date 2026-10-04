@@ -76,6 +76,22 @@ public class DoctorService {
         doctorRepository.delete(doctor);
     }
 
+    // ------------------------------------------------------------------
+    // Quiz features
+    // ------------------------------------------------------------------
+
+    // B1
+    @Transactional(readOnly = true)
+    public List<Doctor> findBySpecialization(String name) {
+        return doctorRepository.findBySpecializationName(name);
+    }
+
+    // B2
+    @Transactional(readOnly = true)
+    public List<Doctor> findWithoutOffice() {
+        return doctorRepository.findDoctorsWithoutOffice();
+    }
+
     private List<Specialization> resolveSpecializations(List<Specialization> requested) {
         if (requested == null || requested.isEmpty()) return new java.util.ArrayList<>();
         List<Specialization> resolved = new java.util.ArrayList<>();

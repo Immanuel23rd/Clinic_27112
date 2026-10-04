@@ -2,6 +2,7 @@ package kigali.clinic.rw.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,17 @@ public class OfficeController {
     @GetMapping
     public List<Office> findAll() {
         return service.findAll();
+    }
+
+    // C3: GET /api/offices/busiest  ->  ["Main Clinic",101,5]  or  "No appointments yet"
+    // The literal path wins over "/{id}". ResponseEntity<?> because the body is an Object[] or a String.
+    @GetMapping("/busiest")
+    public ResponseEntity<?> busiest() {
+        Optional<Object[]> top = service.findBusiest();
+        if (top.isEmpty()) {
+            return ResponseEntity.ok("No appointments yet");
+        }
+        return ResponseEntity.ok(top.get());
     }
 
     @GetMapping("/{id}")

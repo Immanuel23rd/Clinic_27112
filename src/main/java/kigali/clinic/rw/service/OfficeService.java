@@ -1,8 +1,10 @@
 package kigali.clinic.rw.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,14 @@ public class OfficeService {
     public Office findById(UUID id) {
         return officeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Office not found: " + id));
+    }
+
+    // C3: [name, officeNumber, appointmentCount] of the top office, or empty when there are no
+    // appointments (the controller then answers "No appointments yet").
+    @Transactional(readOnly = true)
+    public Optional<Object[]> findBusiest() {
+        List<Object[]> rows = officeRepository.findOfficesByAppointmentCount(PageRequest.of(0, 1));
+        return rows.stream().findFirst();
     }
 
     public Office update(UUID id, Office input) {
